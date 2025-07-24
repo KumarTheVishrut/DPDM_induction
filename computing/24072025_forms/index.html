@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML + JavaScript Demo</title>
+      <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>HTML + JavaScript Interactive Tutorial</h1>
+
+    <section>
+        <h2>1. Click Event Example</h2>
+        <button id="clickMeBtn">Click Me</button>
+        <p id="clickOutput">Nothing clicked yet.</p>
+    </section>
+
+    <section>
+        <h2>2. Input and Output</h2>
+        <label for="nameInput">Enter your name:</label>
+        <input type="text" id="nameInput" />
+        <button id="greetBtn">Greet</button>
+        <p id="greetOutput"></p>
+    </section>
+
+    <section>
+        <h2>3. Simple Calculator</h2>
+        <input type="number" id="num1" placeholder="First number" />
+        <input type="number" id="num2" placeholder="Second number" />
+        <button id="addBtn">Add</button>
+        <p>Result: <span id="calcOutput">0</span></p>
+    </section>
+
+    <section>
+        <h2>4. Form Validation</h2>
+        <form id="signupForm">
+            <label>Email: <input type="email" id="email" required /></label><br />
+            <label>Password: <input type="password" id="password" required /></label><br />
+            <button type="submit">Sign Up</button>
+        </form>
+        <p id="formMessage"></p>
+    </section>
+
+    <section>
+        <h2>5. Toggle Visibility</h2>
+        <button id="toggleBtn">Show/Hide Text</button>
+        <div id="toggleText" class="hidden">
+            <p>This text can be hidden or shown using JavaScript.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>6. Dynamic List</h2>
+        <input type="text" id="itemInput" placeholder="Add item" />
+        <button id="addItemBtn">Add Item</button>
+        <ul id="itemList"></ul>
+    </section>
+
+    <section>
+        <h2>7. Animation with JavaScript</h2>
+        <button id="animateBtn">Animate Box</button>
+        <div class="animated-box" id="box"></div>
+    </section>
+
+    <section>
+        <h2>8. Save Data with localStorage</h2>
+        <input type="text" id="noteInput" placeholder="Write a note" />
+        <button id="saveNoteBtn">Save Note</button>
+        <p>Saved Note: <span id="savedNote"></span></p>
+    </section>
+
+    <script src="main.js"></script>
+</body>
+</html>
+
+
