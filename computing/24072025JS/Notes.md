@@ -1,0 +1,1 @@
+### q1-4 .js has a different syntax because I used node to compile the js program to run it in the folder --- rest of the files are done , click game was made with help of claude because I didn't have any idea of how to put random coordinates but I understand the workings of the code

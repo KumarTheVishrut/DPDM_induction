@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Click the Button Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #game-area {
+            position: relative;
+            width: 80vw;
+            height: 70vh;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        #score {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        #start-btn {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        #start-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+        .target-btn {
+            position: absolute;
+            padding: 15px 25px;
+            font-size: 1em;
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .target-btn:active {
+            background: #1769aa;
+        }
+        #final-score {
+            font-size: 2em;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <button id="start-btn">Start Game</button>
+    <div id="game-area"></div>
+    <div id="final-score"></div>
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score');
+        const startBtn = document.getElementById('start-btn');
+        const finalScoreDisplay = document.getElementById('final-score');
+
+        let score = 0;
+        let appearances = 0;
+        let maxAppearances = 15;
+        let gameInterval = null;
+        let buttonTimeout = null;
+        let buttonExists = false;
+
+        function randomPosition(btnWidth, btnHeight) {
+            const areaRect = gameArea.getBoundingClientRect();
+            const areaWidth = gameArea.clientWidth;
+            const areaHeight = gameArea.clientHeight;
+            // Ensure button stays within bounds
+            const x = Math.random() * (areaWidth - btnWidth);
+            const y = Math.random() * (areaHeight - btnHeight);
+            return { x, y };
+        }
+
+        function showButton() {
+            // Remove any existing button
+            removeButton();
+
+            if (appearances >= maxAppearances) {
+                endGame();
+                return;
+            }
+
+            const btn = document.createElement('button');
+            btn.className = 'target-btn';
+            btn.textContent = 'Click me!';
+            btn.style.visibility = 'hidden'; // Hide until positioned
+
+            // Add to DOM to measure size
+            gameArea.appendChild(btn);
+
+            // Get button size
+            const btnRect = btn.getBoundingClientRect();
+            const btnWidth = btn.offsetWidth;
+            const btnHeight = btn.offsetHeight;
+
+            // Get random position within game area
+            const pos = randomPosition(btnWidth, btnHeight);
+            btn.style.left = pos.x + 'px';
+            btn.style.top = pos.y + 'px';
+            btn.style.visibility = 'visible';
+
+            buttonExists = true;
+
+            btn.onclick = function() {
+                if (buttonExists) {
+                    score++;
+                    scoreDisplay.textContent = 'Score: ' + score;
+                    removeButton();
+                }
+            };
+
+            // Remove button after 1 second if not clicked
+            buttonTimeout = setTimeout(() => {
+                removeButton();
+            }, 1000);
+
+            appearances++;
+        }
+
+        function removeButton() {
+            const btn = gameArea.querySelector('.target-btn');
+            if (btn) {
+                btn.remove();
+            }
+            buttonExists = false;
+            if (buttonTimeout) {
+                clearTimeout(buttonTimeout);
+                buttonTimeout = null;
+            }
+        }
+
+        function startGame() {
+            score = 0;
+            appearances = 0;
+            scoreDisplay.textContent = 'Score: 0';
+            finalScoreDisplay.textContent = '';
+            startBtn.disabled = true;
+            gameArea.innerHTML = '';
+            buttonExists = false;
+
+            // Start the interval
+            showButton();
+            gameInterval = setInterval(() => {
+                showButton();
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            removeButton();
+            startBtn.disabled = false;
+            finalScoreDisplay.textContent = 'Game Over! Final Score: ' + score;
+        }
+
+        startBtn.addEventListener('click', startGame);
+
+        // Responsive game area sizing
+        function resizeGameArea() {
+            const minW = 320, minH = 240, maxW = 700, maxH = 500;
+            let w = Math.max(minW, Math.min(window.innerWidth * 0.8, maxW));
+            let h = Math.max(minH, Math.min(window.innerHeight * 0.7, maxH));
+            gameArea.style.width = w + 'px';
+            gameArea.style.height = h + 'px';
+        }
+        window.addEventListener('resize', resizeGameArea);
+        resizeGameArea();
+    </script>
+</body>
+</html>

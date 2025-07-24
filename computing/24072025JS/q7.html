@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple calculator</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .display {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: right;
+            font-family: monospace;
+            border-radius: 5px;
+        }
+
+        .operation {
+            min-height: 20px;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .current-value {
+            min-height: 40px;
+            font-size: 28px;
+            color: #000;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #666;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #888;
+        }
+
+        button.operator {
+            background-color: #ff9500;
+        }
+
+        button.operator:hover {
+            background-color: #ffaa33;
+        }
+
+        button.clear {
+            background-color: #ff3b30;
+        }
+
+        button.clear:hover {
+            background-color: #ff5442;
+        }
+
+        button.equals {
+            background-color: #34c759;
+        }
+
+        button.equals:hover {
+            background-color: #46d86a;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="calculator">
+        <div class="display">
+            <div class="operation" id="operation">&nbsp;</div>
+            <div class="current-value" id="display">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="operator" onclick="setOperator('^')">^</button>
+            <button class="operator" onclick="setOperator('/')">/</button>
+            <button class="operator" onclick="setOperator('*')">&times;</button>
+            
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="setOperator('-')">-</button>
+            
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="setOperator('+')">+</button>
+            
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="equals" onclick="calculate()">=</button>
+            
+            <button onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+            <button onclick="appendNumber('.')">.</button>
+        </div>
+    </div>
+</div>
+<script>
+    let currentNumber = '';
+    let previousNumber = '';
+    let currentOperator = null;
+    let shouldResetDisplay = false;
+
+    function updateDisplay(value, operation = '') {
+        document.getElementById('display').innerText = value;
+        document.getElementById('operation').innerText = operation;
+    }
+
+    function getOperatorSymbol(op) {
+        switch(op) {
+            case '*': return '×';
+            case '/': return '÷';
+            default: return op;
+        }
+    }
+
+    function appendNumber(num) {
+        if (shouldResetDisplay) {
+            currentNumber = '';
+            shouldResetDisplay = false;
+        }
+        if (num === '.' && currentNumber.includes('.')) return;
+        currentNumber += num;
+        
+        // Update both displays
+        let operation = '';
+        if (previousNumber !== '' && currentOperator) {
+            operation = `${previousNumber} ${getOperatorSymbol(currentOperator)}`;
+        }
+        updateDisplay(currentNumber, operation);
+    }
+
+    function clearDisplay() {
+        currentNumber = '';
+        previousNumber = '';
+        currentOperator = null;
+        updateDisplay('0', '');
+    }
+
+    function setOperator(operator) {
+        if (currentNumber === '') return;
+        
+        if (previousNumber !== '') {
+            calculate();
+        }
+        
+        previousNumber = currentNumber;
+        currentOperator = operator;
+        shouldResetDisplay = true;
+        
+        // Show the operation in progress
+        updateDisplay(currentNumber, `${previousNumber} ${getOperatorSymbol(operator)}`);
+    }
+
+    function calculate() {
+        if (previousNumber === '' || currentNumber === '' || !currentOperator) return;
+
+        const num1 = parseFloat(previousNumber);
+        const num2 = parseFloat(currentNumber);
+        let result;
+
+        // Show complete operation before calculating
+        const operation = `${previousNumber} ${getOperatorSymbol(currentOperator)} ${currentNumber} =`;
+
+        switch (currentOperator) {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                result = num2 !== 0 ? num1 / num2 : 'Error';
+                break;
+            case '^':
+                result = Math.pow(num1, num2);
+                break;
+        }
+
+        currentNumber = result.toString();
+        previousNumber = '';
+        currentOperator = null;
+        updateDisplay(currentNumber, operation);
+        shouldResetDisplay = true;
+    }
+</script>
+</body>
+</html>

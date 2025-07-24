@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digit counter for decimal numbers</title>
+
+    <script>
+        function countDigits(num) {
+            const x = num.toString().split(".");
+            // If there's no decimal part, only count the integer part
+            if (x.length === 1) {
+                return x[0].length;
+            }
+            // If there's a decimal part, count both parts
+            return x[0].length + x[1].length;
+        }
+
+        function displayResult() {
+            const num = document.getElementById("num").value;
+            const result = countDigits(num);
+            document.getElementById("result").innerHTML = `The number of digits in ${num} is ${result}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Digit counter for decimal numbers</h1>
+    <input type="number" id="num" placeholder="Enter a number">
+    <button onclick="displayResult()">Count Digits</button>
+    <p id="result"></p>
+    
+</body>
+</html>
